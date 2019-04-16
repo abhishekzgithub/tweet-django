@@ -55,3 +55,12 @@ class PublicTimeLine(models.Model):
     public_tweet = models.ForeignKey('Tweet',
                               related_name='public_tweet',
                               on_delete=models.CASCADE)
+
+from annoying.fields import AutoOneToOneField
+
+class UserProfile(models.Model):
+    user = AutoOneToOneField('auth.user')
+    follows = models.ManyToManyField('UserProfile', related_name='followed_by')
+
+    def __unicode__(self):
+        return self.user.username                    
