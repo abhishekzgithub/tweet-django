@@ -22,3 +22,17 @@ class TweetSerialView(viewsets.ModelViewSet):
 class FollowSerialView(viewsets.ModelViewSet):
     queryset=models.Follow.objects.all()
     serializer_class = serializers.FollowSerializer
+
+from . import forms
+def user_form(request):
+    if request.method=="POST":
+        form=forms.UserForm(request.POST)
+        if form.is_valid():
+            return HttpResponse('<h1>form submitted</h1>')
+    else:
+        form = forms.UserForm(initial={'name':'Abhishektest01'})
+    context={
+        'form':form
+    }
+    print("form else")
+    return render(request,'userform.html',context)

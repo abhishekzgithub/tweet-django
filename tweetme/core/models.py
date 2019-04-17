@@ -44,23 +44,33 @@ class Follow(models.Model):
     class Meta: 
         unique_together = ('user', 'target')
 
-class UserTimeLine(models.Model):
-    username=models.ForeignKey('auth.User',related_name='own_timeline',on_delete=models.CASCADE)
-    own_tweet = models.ForeignKey('Tweet',
-                              related_name='own_tweet',
-                              on_delete=models.CASCADE)
+# class UserTimeLine(models.Model):
+#     username=models.ForeignKey('auth.User',related_name='own_timeline',on_delete=models.CASCADE)
+#     own_tweet = models.ForeignKey('Tweet',
+#                               related_name='own_tweet',
+#                               on_delete=models.CASCADE)
 
-class PublicTimeLine(models.Model):
-    username=models.ForeignKey('auth.User',related_name='public_timeline',on_delete=models.CASCADE)
-    public_tweet = models.ForeignKey('Tweet',
-                              related_name='public_tweet',
-                              on_delete=models.CASCADE)
+# class PublicTimeLine(models.Model):
+#     username=models.ForeignKey('auth.User',related_name='public_timeline',on_delete=models.CASCADE)
+#     public_tweet = models.ForeignKey('Tweet',
+#                               related_name='public_tweet',
+#                               on_delete=models.CASCADE)
 
-# from annoying.fields import AutoOneToOneField
+class UserFollower(models.Model):
+    username=models.ForeignKey('auth.User',related_name='user_follower',on_delete=models.CASCADE)
+    followers = models.ManyToManyField('auth.User', related_name='followed_by')
+    date=models.DateTimeField(auto_now_add=True)
+    count=models.IntegerField(default=1)
+    def __str__(self):
+        return str(self.username)+"->"+str(self.followers)
+    class Meta:
+        db_table='user_follower'
 
-# class UserProfile(models.Model):
-#     user = AutoOneToOneField('auth.user')
-#     follows = models.ManyToManyField('UserProfile', related_name='followed_by')
 
-#     def __unicode__(self):
-#         return self.user.username                    
+class HashTag(Tweet):
+    name=models.CharField(max_length=10,unique=True)
+    tweet=models.ManyToManyField(Tweet,related_name='hastag')
+    def __str__(self):
+        return self.name
+    class Meta:
+        db_table='hashtag'
